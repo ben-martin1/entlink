@@ -3,11 +3,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 
 import ScheduleCreator from './components/CreateSchedule';
+import SchedulePage from './pages/SchedulePage';
+import BooleanScheduler from './pages/BooleanScheduler';
 
 
 // import MyCalendar from './components/Calendar'; // save for react-big-cal implementation
 
-const apiUrl = process.env.REACT_APP_API_URL;
+
 
 // API call for cs361 A4
 /*const data_call = async () => {
@@ -46,13 +48,44 @@ function App() {
     fetchData();
   }, []); // add a "refresh" hook into [] to change every x minutes. this will allow repeat api calls to update cal_data
 */
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+  // state and global variables - passed as props down to CreateScheduler component to maintain schedules across pages
+  const default_date = new Date().toISOString().slice(0,16);
+  const [eventList, setEvents] = useState([ {index:0, date: new Date(default_date), duration:4} ]);
+  const [deletedEvents, setDeletedEvents] = useState([]);
+  const [eventIndex, setEventIndex] = useState(0);
+
+  // to do - try to get passing this as props to work, because it'll be so much cleaner
+  const schedulerProps = [
+    default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex,
+  ];
+
   return (
-    <>
-    <div className='h-screen flex flex-col items-center bg-blue-100'>
-      <h1 className='p-4 text-7xl'>ENTERLINKED</h1>
-      <ScheduleCreator/>
+    <BrowserRouter className='h-screen'>
+    <div className='h-full flex flex-col items-center bg-blue-100'>
+      <h1 className='p-4 text-7xl'><a href="/">ENTERLINKED</a></h1>
+      <main>
+        <Routes>
+          <Route path='/' element={<a href='/schedule'>schedule</a>}/>
+          <Route path="/schedule" element={<SchedulePage
+                default_date={default_date}
+                eventList={eventList} 
+                setEvents={setEvents} 
+                deletedEvents={deletedEvents} 
+                setDeletedEvents={setDeletedEvents} 
+                eventIndex={eventIndex} 
+                setEventIndex={setEventIndex} />}/>
+          <Route path="/compare" element={<BooleanScheduler eventList={eventList} 
+                setEvents={setEvents} 
+                deletedEvents={deletedEvents} 
+                setDeletedEvents={setDeletedEvents} 
+                eventIndex={eventIndex} 
+                setEventIndex={setEventIndex}/>}/>
+        </Routes>
+      </main>
     </div>
-    </>
+    </BrowserRouter>
   );
 }
 
