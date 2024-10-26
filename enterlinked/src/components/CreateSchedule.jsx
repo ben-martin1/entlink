@@ -1,14 +1,13 @@
 import { useState } from "react";
 import DateLine from "./DateLine";
 
-const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex}) => {
+const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex, showParse=true}) => {
     // initialize two blank-array states for live events and deleted events
 
     // const default_date = new Date().toISOString().slice(0,16);
     // const [eventList, setEvents] = useState(...existing_evs, [ {index:0, date: new Date(default_date), duration:4} ]);
     // const [deletedEvents, setDeletedEvents] = useState([]);
     // const [eventIndex, setEventIndex] = useState(0);
-    console.log(default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex);
     const changeEvent = (e, i) => {
         const value = e.target.value;
         let new_duration;
@@ -44,7 +43,7 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
 
     const addEvent = () => {
         const new_date = new Date(default_date);
-        console.log(default_date);
+        console.log(eventList.length);
         setEvents(eventList => [...eventList, {index:eventIndex+1, date:new_date, duration:4 }]);
         setEventIndex(prevIndex => prevIndex+1);
     };
@@ -97,12 +96,15 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
             <button onClick={addEvent}g className="w-16 text-center bg-green-500 rounded-lg p-3 hover:cursor-pointer">+</button>
             {deletedEvents.length > 0 ? <div onClick={restoreEvents} className="text-center bg-blue-500 rounded-lg p-3 hover:cursor-pointer"> Restore deleted events.</div>:<></>}
             </div>
-            <div id="parsedSchedule" className="py-12 flex flex-col items-center">
-                { eventList.length >0 ? <h1 className="text-center">Schedule</h1> : <></>}
-                {eventList.map(event => (
-                <p key={event.index}> {getParsedSchedule(event)}</p>
-                ))}
-            </div>
+            {showParse ? 
+                <div id="parsedSchedule" className="py-12 flex flex-col items-center">
+                    { eventList.length >0 ? <h1 className="text-center">Schedule</h1> : <></>}
+                    {eventList.map(event => (
+                    <p key={event.index}> {getParsedSchedule(event)}</p>
+                    ))}
+                </div> 
+            : <></>}
+            
         </div>
     );
 };

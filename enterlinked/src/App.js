@@ -52,36 +52,21 @@ function App() {
 
   // state and global variables - passed as props down to CreateScheduler component to maintain schedules across pages
   const default_date = new Date().toISOString().slice(0,16);
-  const [eventList, setEvents] = useState([ {index:0, date: new Date(default_date), duration:4} ]);
+  const [eventList, setEvents] = useState([]);
   const [deletedEvents, setDeletedEvents] = useState([]);
   const [eventIndex, setEventIndex] = useState(0);
 
-  // to do - try to get passing this as props to work, because it'll be so much cleaner
-  const schedulerProps = [
-    default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex,
-  ];
+  const schedulerProps = {default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex,};
 
   return (
     <BrowserRouter className='h-screen'>
     <div className='h-full flex flex-col items-center bg-blue-100'>
       <h1 className='p-4 text-7xl'><a href="/">ENTERLINKED</a></h1>
-      <main>
-        <Routes>
+      <main className="w-full" >
+        <Routes className="w-full" >
           <Route path='/' element={<a href='/schedule'>schedule</a>}/>
-          <Route path="/schedule" element={<SchedulePage
-                default_date={default_date}
-                eventList={eventList} 
-                setEvents={setEvents} 
-                deletedEvents={deletedEvents} 
-                setDeletedEvents={setDeletedEvents} 
-                eventIndex={eventIndex} 
-                setEventIndex={setEventIndex} />}/>
-          <Route path="/compare" element={<BooleanScheduler eventList={eventList} 
-                setEvents={setEvents} 
-                deletedEvents={deletedEvents} 
-                setDeletedEvents={setDeletedEvents} 
-                eventIndex={eventIndex} 
-                setEventIndex={setEventIndex}/>}/>
+          <Route path="/schedule" element={<SchedulePage {...schedulerProps}/>}/>
+          <Route path="/compare" element={<BooleanScheduler {...schedulerProps}/>}/>
         </Routes>
       </main>
     </div>
