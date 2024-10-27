@@ -7,6 +7,8 @@ const BooleanScheduler = ( {...props} ) => {
     const [temp_eventList, temp_setEvents] = useState([]);
     const [temp_deletedEvents, temp_setDeletedEvents] = useState([]);
     const [temp_eventIndex, temp_setEventIndex] = useState(0);
+    console.log(JSON.stringify(props));
+    console.log(props);
 
     return(
         <div className="w-full bg-blue-50">
