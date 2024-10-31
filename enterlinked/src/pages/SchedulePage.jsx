@@ -1,5 +1,5 @@
 import ScheduleCreator from "../components/CreateSchedule";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import conversionService from "../utilities/conversionService";
 
 const SchedulePage = ( {...props} ) => {
@@ -17,9 +17,20 @@ const SchedulePage = ( {...props} ) => {
         setShowSchedParse((old_parse) => !old_parse);
     };
 
+    // calls function when eventList or booleanActive changes
+    useEffect(() => { buildAvailableTimes(); }, [props.eventList, booleanActive]);
+
+    const buildAvailableTimes = () => {
+        if (!booleanActive){
+            return; // function called when turning off booleanActive
+        }
+        const goodDates = conversionService.getAvailableTimes(temp_eventList, props.eventList);
+        setAvailDates([props.eventList]); //change later to goodDates upon proper implementation
+    };
+
     return (
         <div className="w-full">
-            <span className="w-full text-center">Build a schedule below and you can copy/paste it as plaintext for easy sending. Use the <span onClick={booleanSchedule} className="p-2 bg-black text-white rounded">Enterlinked Boolean Scheduler</span> to quickly find available times for talent.</span>
+            <span className="w-full text-center">Build a schedule below and you can copy/paste it as plaintext for easy sending. Use the <span onClick={booleanSchedule} className="p-2 bg-black text-white rounded hover:cursor-pointer">Enterlinked Boolean Scheduler</span> to quickly find available times for talent.</span>
             <div className="mt-6 flex flex-row justify-around">
                 <ScheduleCreator {...props} showParse={showSchedParse}/>
                 {booleanActive ? <ScheduleCreator
@@ -36,7 +47,11 @@ const SchedulePage = ( {...props} ) => {
                 {temp_eventList.length > 0 && booleanActive?
                 <span>
                     <div>Dates that work!</div>
-                    {temp_eventList.map((t_ev) => (<p>{conversionService.getParsedSchedule(t_ev)}</p>))}
+                    {
+                        <div className="bg-red-900 text-white">{availDates.map(availDate => (
+                            <p key={availDate.index}>{conversionService.getParsedSchedule(availDate)}</p>))}
+                        </div>
+                        }
                 </span>
                     :<></>}
             </div>

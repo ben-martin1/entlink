@@ -1,14 +1,15 @@
-import DateLine from "./DateLine";
+import { useState } from "react";
 import conversionService from "../utilities/conversionService";
 
 // event = {index, start_date, end_date, duration}
 
 const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex, showParse=true}) => {
+
     const changeEvent = (e, i) => {
         const value = e.target.value;
         let new_duration;
         let new_start_date;
-
+    
         // get both date and duration of event with passed index
         eventList.map((ev) => {
             if (ev.index === i){
@@ -16,14 +17,14 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
                 new_duration = ev.duration;
             } 
         });
-
+    
         if (e.target.name === "duration"){
             new_duration = Number(value);
         } else{
             new_start_date = new Date(value);
         }
         let new_end_date = new Date(new_start_date.getTime() + (60*60*1000*new_duration)) // new_duration hours worth of milliseconds
-
+    
         // if duration changed, we don't need to sort 
         if (e.target.name === "duration"){
             setEvents(old_evs => 
@@ -35,7 +36,6 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
             );
         }
     };
-
     const deleteEvent = (event) => {
         // add event to deleted events
         const old_ev = event;
@@ -48,7 +48,6 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
     const addEvent = () => {
         const new_start_date = new Date(default_date);
         const new_end_date = new Date(new_start_date.getTime() + (60*60*1000*4)) // 4 hours worth of milliseconds
-
         console.log(eventList.length);
         setEvents(eventList => [...eventList, 
             {index:eventIndex+1, start_date:new_start_date, end_date:new_end_date, duration:4 }].sort((a,b) => new Date(a)-new Date(b)));
@@ -56,11 +55,12 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
     };
 
     const restoreEvents = () => {
-        debugger;
         setEvents(old_evs => [...old_evs, ...deletedEvents].sort((a,b) => new Date(a)-new Date(b)));
         setDeletedEvents([]);
     };
     
+
+
     return(
         <div className="w-full flex flex-col items-center">
             {eventList.map(event => (
@@ -79,9 +79,9 @@ const ScheduleCreator = ({default_date, eventList, setEvents, deletedEvents, set
             {showParse ? 
                 <div id="parsedSchedule" className="py-12 flex flex-col items-center">
                     { eventList.length >0 ? <h1 className="text-center">Schedule</h1> : <></>}
-                    {eventList.map(event => (
-                    <p key={event.index}> {conversionService.getParsedSchedule(event)}</p>
-                    ))}
+                    {/* {eventList.map(event => ( */}
+                    {/* <p key={event.index}> {conversionService.getParsedSchedule(event)}</p> */}
+                    {/* ))} */}
                 </div> 
             : <></>}
             
