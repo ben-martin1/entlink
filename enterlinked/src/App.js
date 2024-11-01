@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'; 
 import './App.css';
 
+import eventService from './utilities/eventService';
+
 import SchedulePage from './pages/SchedulePage';
 import BooleanScheduler from './pages/BooleanScheduler';
 
@@ -13,7 +15,7 @@ function App() {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   // state and global variables - passed as props down to CreateScheduler component to maintain schedules across pages
-  const default_date = new Date().toISOString().slice(0,16);
+  const default_date = eventService.defaultDate;
   const [eventList, setEvents] = useState([]);
   const [deletedEvents, setDeletedEvents] = useState([]);
   const [eventIndex, setEventIndex] = useState(0);
@@ -23,8 +25,6 @@ function App() {
   const schedulerProps = {default_date, eventList, setEvents, deletedEvents, setDeletedEvents, eventIndex, setEventIndex,};
 
   // MUST DO build homepage
-  // MUST DO figure out state issue accross renders
-  // MUST DO fix default date not filling in input fields on creation/restoration
   return (
     <BrowserRouter className='h-screen'>
     <div className='h-screen flex flex-col items-center bg-blue-100'>
